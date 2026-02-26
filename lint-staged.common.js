@@ -78,7 +78,7 @@ const getEslintFixCmd = ({
  */
 const concatFilesForPrettier = (filenames) =>
   filenames
-    .map((filename) => `"${isWin ? filename : escape([filename])}"`)
+    .map((filename) => (isWin ? `"${filename}"` : escape([filename])))
     .join(' ');
 
 const concatFilesForStylelint = concatFilesForPrettier;

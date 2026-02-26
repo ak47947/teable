@@ -105,7 +105,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithViewEvent(() => deleteView(tableId, deletedViewId));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
 
       expect(result.data.trashItems.length).toBe(1);
       expect((result.data.trashItems[0] as ITableTrashItemVo).resourceIds[0]).toBe(deletedViewId);
@@ -117,7 +120,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithFieldEvent(async () => deleteFields(tableId, deletedFieldIds));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
 
       expect(result.data.trashItems.length).toBe(1);
       expect((result.data.trashItems[0] as ITableTrashItemVo).resourceIds).toEqual(deletedFieldIds);
@@ -129,7 +135,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithRecordEvent(() => deleteRecords(tableId, deletedRecordIds));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
 
       expect(result.data.trashItems.length).toBe(1);
       expect((result.data.trashItems[0] as ITableTrashItemVo).resourceIds).toEqual(
@@ -155,7 +164,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithViewEvent(() => deleteView(tableId, deletedViewId));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
       const restored = await restoreTrash(result.data.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -167,7 +179,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithFieldEvent(async () => deleteFields(tableId, deletedFieldIds));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
       const restored = await restoreTrash(result.data.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -184,7 +199,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithFieldEvent(async () => deleteFields(tableId, [formulaField.id]));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
       const restored = await restoreTrash(result.data.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -217,10 +235,10 @@ describe('Trash (e2e)', () => {
 
       const itemsRes = await getTrashItems({
         resourceId: tableId,
-        resourceType: ResourceType.Table,
+        resourceType: ResourceType.Table as any,
       });
       const fieldTrashItem = itemsRes.data.trashItems.find(
-        (t) => (t as ITableTrashItemVo).resourceType === ResourceType.Field
+        (t) => (t as ITableTrashItemVo).resourceType === (ResourceType.Field as any)
       ) as ITableTrashItemVo | undefined;
 
       expect(fieldTrashItem).toBeTruthy();
@@ -238,7 +256,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithRecordEvent(() => deleteRecords(tableId, deletedRecordIds));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
       const restored = await restoreTrash(result.data.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -269,15 +290,18 @@ describe('Trash (e2e)', () => {
       await awaitWithFieldEvent(async () => deleteFields(tableId, deletedFieldIds));
       await awaitWithRecordEvent(() => deleteRecords(tableId, deletedRecordIds));
 
-      const result = await getTrashItems({ resourceId: tableId, resourceType: ResourceType.Table });
+      const result = await getTrashItems({
+        resourceId: tableId,
+        resourceType: ResourceType.Table as any,
+      });
 
       expect(result.data.trashItems.length).toEqual(3);
 
-      await resetTrashItems({ resourceType: ResourceType.Table, resourceId: tableId });
+      await resetTrashItems({ resourceType: ResourceType.Table as any, resourceId: tableId });
 
       const resetedResult = await getTrashItems({
         resourceId: tableId,
-        resourceType: ResourceType.Table,
+        resourceType: ResourceType.Table as any,
       });
 
       expect(resetedResult.data.trashItems.length).toEqual(0);

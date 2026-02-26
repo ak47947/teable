@@ -2057,13 +2057,21 @@ export class FieldSupplementService {
     }
 
     if (fieldIds.length) {
-      await this.prismaService.txClient().reference.createMany({
-        data: fieldIds.map((fromFieldId) => ({
-          fromFieldId,
-          toFieldId,
-        })),
-        skipDuplicates: true,
+      const existingRefs = await this.prismaService.txClient().reference.findMany({
+        where: { toFieldId },
+        select: { fromFieldId: true },
       });
+      const existingRefIds = new Set(existingRefs.map((r) => r.fromFieldId));
+      const newFieldIds = fieldIds.filter((id) => !existingRefIds.has(id));
+
+      if (newFieldIds.length) {
+        await this.prismaService.txClient().reference.createMany({
+          data: newFieldIds.map((fromFieldId) => ({
+            fromFieldId,
+            toFieldId,
+          })),
+        });
+      }
     }
   }
 
@@ -2151,9 +2159,12 @@ export class FieldSupplementService {
 
     if (!rows.length) return;
 
+    const uniqueRows = Array.from(
+      new Map(rows.map((r) => [`${r.fromFieldId}-${r.toFieldId}`, r])).values()
+    );
+
     await prisma.taskReference.createMany({
-      data: rows,
-      skipDuplicates: true,
+      data: uniqueRows,
     });
   }
 }

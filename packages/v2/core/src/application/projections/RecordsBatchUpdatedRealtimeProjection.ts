@@ -50,10 +50,11 @@ export class RecordsBatchUpdatedRealtimeProjection implements IEventHandler<Reco
 
         if (batchedChanges.length === 0) continue;
 
+        const currentDocId = docId;
         const previous = tasksByRecord.get(update.recordId) ?? Promise.resolve(ok(undefined));
         const next = previous.then(async (previousResult) => {
           if (previousResult.isErr()) return previousResult;
-          return realtimeEngine.applyChange(context, docId, batchedChanges, {
+          return realtimeEngine.applyChange(context, currentDocId, batchedChanges, {
             version: update.oldVersion,
           });
         });

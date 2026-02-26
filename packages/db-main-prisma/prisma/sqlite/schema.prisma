@@ -690,7 +690,7 @@ model Template {
   name                String?
   description         String?
   markdownDescription String?   @map("markdown_description")
-  categoryId          String[]  @map("category_id")
+  categoryId          String?   @map("category_id")
   createdTime         DateTime  @default(now()) @map("created_time")
   createdBy           String    @map("created_by")
   lastModifiedTime    DateTime? @updatedAt @map("last_modified_time")

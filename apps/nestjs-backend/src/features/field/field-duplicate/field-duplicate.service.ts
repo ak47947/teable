@@ -266,10 +266,20 @@ export class FieldDuplicateService {
       );
 
     if (referenceRows.length) {
-      await this.prismaService.txClient().reference.createMany({
-        data: referenceRows,
-        skipDuplicates: true,
+      const existingRefs = await this.prismaService.txClient().reference.findMany({
+        where: { toFieldId: { in: referenceRows.map((r) => r.toFieldId) } },
+        select: { fromFieldId: true, toFieldId: true },
       });
+      const existingRefSet = new Set(existingRefs.map((r) => `${r.fromFieldId}-${r.toFieldId}`));
+      const newReferenceRows = referenceRows.filter(
+        (r) => !existingRefSet.has(`${r.fromFieldId}-${r.toFieldId}`)
+      );
+
+      if (newReferenceRows.length) {
+        await this.prismaService.txClient().reference.createMany({
+          data: newReferenceRows,
+        });
+      }
     }
   }
 

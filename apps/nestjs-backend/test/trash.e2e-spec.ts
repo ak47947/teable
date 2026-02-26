@@ -68,7 +68,7 @@ describe('Trash (e2e)', () => {
     it('should get trash for space', async () => {
       await awaitWithSpaceEvent(() => deleteSpace(spaceId));
 
-      const res = await getTrash({ resourceType: ResourceType.Space });
+      const res = await getTrash({ resourceType: ResourceType.Space as any });
 
       expect(trashVoSchema.safeParse(res.data).success).toEqual(true);
     });
@@ -76,7 +76,7 @@ describe('Trash (e2e)', () => {
     it('should get trash for base', async () => {
       await awaitWithBaseEvent(() => deleteBase(baseId));
 
-      const res = await getTrash({ resourceType: ResourceType.Base });
+      const res = await getTrash({ resourceType: ResourceType.Base as any });
 
       expect(trashVoSchema.safeParse(res.data).success).toEqual(true);
     });
@@ -85,7 +85,10 @@ describe('Trash (e2e)', () => {
       const tableId = (await createTable(baseId, {})).id;
       await awaitWithTableEvent(() => deleteTable(baseId, tableId));
 
-      const res = await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base });
+      const res = await getTrashItems({
+        resourceId: baseId,
+        resourceType: ResourceType.Base as any,
+      });
 
       expect(res.data.trashItems.length).toBe(1);
       expect((res.data.trashItems[0] as ITrashItemVo).resourceId).toBe(tableId);
@@ -105,7 +108,10 @@ describe('Trash (e2e)', () => {
 
       await awaitWithTableEvent(() => deleteTable(baseId, foreignTableId));
 
-      const res = await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base });
+      const res = await getTrashItems({
+        resourceId: baseId,
+        resourceType: ResourceType.Base as any,
+      });
 
       expect(res.data.trashItems.length).toBe(1);
       expect((res.data.trashItems[0] as ITrashItemVo).resourceId).toBe(foreignTableId);
@@ -134,7 +140,7 @@ describe('Trash (e2e)', () => {
     it('should restore space successfully', async () => {
       await awaitWithSpaceEvent(() => deleteSpace(spaceId));
 
-      const trash = (await getTrash({ resourceType: ResourceType.Space })).data;
+      const trash = (await getTrash({ resourceType: ResourceType.Space as any })).data;
       const restored = await restoreTrash(trash.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -143,7 +149,7 @@ describe('Trash (e2e)', () => {
     it('should restore base successfully', async () => {
       await awaitWithBaseEvent(() => deleteBase(baseId));
 
-      const trash = (await getTrash({ resourceType: ResourceType.Base })).data;
+      const trash = (await getTrash({ resourceType: ResourceType.Base as any })).data;
       const restored = await restoreTrash(trash.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -152,8 +158,9 @@ describe('Trash (e2e)', () => {
     it('should restore table successfully', async () => {
       await awaitWithTableEvent(() => deleteTable(baseId, tableId));
 
-      const trash = (await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base }))
-        .data;
+      const trash = (
+        await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base as any })
+      ).data;
       const restored = await restoreTrash(trash.trashItems[0].id);
 
       expect(restored.status).toEqual(201);
@@ -186,15 +193,16 @@ describe('Trash (e2e)', () => {
       await awaitWithTableEvent(() => deleteTable(baseId, tableId2));
       await awaitWithTableEvent(() => deleteTable(baseId, tableId3));
 
-      const trash = (await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base }))
-        .data;
+      const trash = (
+        await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base as any })
+      ).data;
 
       expect(trash.trashItems.length).toEqual(3);
 
-      await resetTrashItems({ resourceType: ResourceType.Base, resourceId: baseId });
+      await resetTrashItems({ resourceType: ResourceType.Base as any, resourceId: baseId });
 
       const resetTrash = (
-        await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base })
+        await getTrashItems({ resourceId: baseId, resourceType: ResourceType.Base as any })
       ).data;
 
       expect(resetTrash.trashItems.length).toEqual(0);

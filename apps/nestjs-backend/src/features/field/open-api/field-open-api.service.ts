@@ -607,13 +607,21 @@ export class FieldOpenApiService {
     );
 
     if (missingReferenceIds.length) {
-      await this.prismaService.txClient().reference.createMany({
-        data: missingReferenceIds.map((fromFieldId) => ({
-          fromFieldId,
-          toFieldId: field.id,
-        })),
-        skipDuplicates: true,
+      const existingRefs = await this.prismaService.txClient().reference.findMany({
+        where: { toFieldId: field.id },
+        select: { fromFieldId: true },
       });
+      const existingRefIds = new Set(existingRefs.map((r) => r.fromFieldId));
+      const newMissingReferenceIds = missingReferenceIds.filter((id) => !existingRefIds.has(id));
+
+      if (newMissingReferenceIds.length) {
+        await this.prismaService.txClient().reference.createMany({
+          data: newMissingReferenceIds.map((fromFieldId) => ({
+            fromFieldId,
+            toFieldId: field.id,
+          })),
+        });
+      }
     }
 
     const isValid = await this.isFieldConfigurationValid(tableId, field);

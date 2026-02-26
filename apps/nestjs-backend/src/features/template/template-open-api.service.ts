@@ -114,8 +114,8 @@ export class TemplateOpenApiService {
           : featured === false
             ? { OR: [{ featured: false }, { featured: null }] }
             : {}),
-        categoryId: categoryId ? { has: categoryId } : undefined,
-        name: search ? { contains: search, mode: 'insensitive' } : undefined,
+        categoryId: categoryId ? { contains: categoryId } : undefined,
+        name: search ? { contains: search } : undefined,
       },
       orderBy: {
         order: 'asc',
@@ -218,7 +218,7 @@ export class TemplateOpenApiService {
         where: { id: templateId },
         data: {
           ...updateTemplateRo,
-          categoryId: updateTemplateRo.categoryId,
+          categoryId: updateTemplateRo.categoryId as any,
           cover: newCover as string | null | undefined,
         },
       })
