@@ -79,3 +79,5 @@ pnpm-debug.log*
 # LocalStorage assets
 
 **/.assets
+
+.agent/*
